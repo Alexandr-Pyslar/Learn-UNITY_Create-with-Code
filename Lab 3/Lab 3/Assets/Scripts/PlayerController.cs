@@ -1,26 +1,44 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
     private float horInput;
     private float verInput;
     public float speed = 10f;
+    private Rigidbody rb;
+    public float zBound = 7.5f;
     
-
-    // Start is called before the first frame update
     void Start()
     {
-        
+        rb = GetComponent<Rigidbody>();
     }
 
-    // Update is called once per frame
     void Update()
+    {
+        MovePlayer();
+        ConstrainPlayer();
+    }
+
+    void MovePlayer()
     {
         horInput = Input.GetAxis("Horizontal");
         verInput = Input.GetAxis("Vertical");
 
-        transform.Translate(new Vector3(horInput, 0 , verInput) * Time.deltaTime * speed);
+        transform.Translate(new Vector3(horInput, 0, verInput) * Time.deltaTime * speed);
+        //rb.AddForce(Vector3.forward * speed * verInput);
+        //rb.AddForce(Vector3.right * speed * horInput);
+    }
+
+    void ConstrainPlayer()
+    {
+        if (transform.position.z < -zBound)
+        {
+            transform.position = new Vector3(transform.position.x, transform.position.y, -zBound);
+        }
+
+        if (transform.position.z > zBound)
+        {
+            transform.position = new Vector3(transform.position.x, transform.position.y, zBound);
+        }
     }
 }
